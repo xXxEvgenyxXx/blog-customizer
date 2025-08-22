@@ -3,7 +3,14 @@ import { Button } from 'src/ui/button';
 import { useState } from 'react';
 import { Text } from 'src/ui/text';
 import { RadioGroup } from 'src/ui/radio-group';
-import { fontSizeOptions, fontFamilyOptions, fontColors, OptionType } from 'src/constants/articleProps';
+import {
+    fontSizeOptions,
+    fontFamilyOptions,
+    fontColors,
+    backgroundColors,
+    contentWidthArr,
+    OptionType
+} from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
 
@@ -14,6 +21,8 @@ export const ArticleParamsForm = () => {
     const [selectedFontSize, setSelectedFontSize] = useState<OptionType>(fontSizeOptions[0]);
     const [selectedFontFamily, setSelectedFontFamily] = useState<OptionType>(fontFamilyOptions[0]);
     const [selectedFontColor, setSelectedFontColor] = useState<OptionType>(fontColors[0]);
+    const [selectedBackgroundColor, setSelectedBackgroundColor] = useState<OptionType>(backgroundColors[0]);
+    const [selectedContentWidth, setSelectedContentWidth] = useState<OptionType>(contentWidthArr[0]);
 
     return (
         <>
@@ -48,7 +57,20 @@ export const ArticleParamsForm = () => {
                         onChange={setSelectedFontSize}
                     />
                     <Separator></Separator>
-
+                    <Select
+                        selected={selectedBackgroundColor}
+                        options={backgroundColors}
+                        placeholder="Выберите цвет фона"
+                        onChange={setSelectedBackgroundColor}
+                        title="ЦВЕТ ФОНА"
+                    />
+                    <Select
+                        selected={selectedContentWidth}
+                        options={contentWidthArr}
+                        placeholder="Выберите ширину контента"
+                        onChange={setSelectedContentWidth}
+                        title="ШИРИНА КОНТЕНТА"
+                    />
                     <div className={styles.bottomContainer}>
                         <Button title='Сбросить' htmlType='reset' type='clear' />
                         <Button title='Применить' htmlType='submit' type='apply' />
