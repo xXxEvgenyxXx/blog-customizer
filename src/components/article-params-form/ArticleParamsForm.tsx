@@ -1,6 +1,6 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Text } from 'src/ui/text';
 import { RadioGroup } from 'src/ui/radio-group';
 import {
@@ -13,16 +13,40 @@ import {
 } from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
+import { defaultArticleState } from 'src/constants/articleProps';
 
 import styles from './ArticleParamsForm.module.scss';
 
 export const ArticleParamsForm = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedFontSize, setSelectedFontSize] = useState<OptionType>(fontSizeOptions[0]);
-    const [selectedFontFamily, setSelectedFontFamily] = useState<OptionType>(fontFamilyOptions[0]);
-    const [selectedFontColor, setSelectedFontColor] = useState<OptionType>(fontColors[0]);
-    const [selectedBackgroundColor, setSelectedBackgroundColor] = useState<OptionType>(backgroundColors[0]);
-    const [selectedContentWidth, setSelectedContentWidth] = useState<OptionType>(contentWidthArr[0]);
+    const [selectedFontSize, setSelectedFontSize] = useState<OptionType>(defaultArticleState.fontSizeOption);
+    const [selectedFontFamily, setSelectedFontFamily] = useState<OptionType>(defaultArticleState.fontFamilyOption);
+    const [selectedFontColor, setSelectedFontColor] = useState<OptionType>(defaultArticleState.fontColor);
+    const [selectedBackgroundColor, setSelectedBackgroundColor] = useState<OptionType>(defaultArticleState.backgroundColor);
+    const [selectedContentWidth, setSelectedContentWidth] = useState<OptionType>(defaultArticleState.contentWidth);
+
+    // Функция применения стилей
+    const handleSubmit = () => {
+        document.documentElement.style.setProperty('--font-family', selectedFontFamily.value);
+        document.documentElement.style.setProperty('--font-color', selectedFontColor.value);
+        document.documentElement.style.setProperty('--background-color', selectedBackgroundColor.value);
+        document.documentElement.style.setProperty('--content-width', selectedContentWidth.value);
+        document.documentElement.style.setProperty('--font-size', selectedFontSize.value);
+    };
+
+    // Функция сброса стилей
+    const handleReset = () => {
+        setSelectedFontFamily(defaultArticleState.fontFamilyOption);
+        setSelectedFontColor(defaultArticleState.fontColor);
+        setSelectedBackgroundColor(defaultArticleState.backgroundColor);
+        setSelectedContentWidth(defaultArticleState.contentWidth);
+        setSelectedFontSize(defaultArticleState.fontSizeOption);
+    };
+
+    // Применяем стили при изменении состояния
+    useEffect(() => {
+        handleSubmit();
+    }, [selectedFontSize, selectedFontFamily, selectedFontColor, selectedBackgroundColor, selectedContentWidth]);
 
     return (
         <>
@@ -31,7 +55,16 @@ export const ArticleParamsForm = () => {
                 onClick={() => setIsOpen(!isOpen)}
             />
             <aside className={`${styles.container} ${isOpen ? styles.container_open : ''}`}>
-                <form className={styles.form}>
+                <form className={styles.form} onSubmit={(evt)=>{
+					evt.preventDefault();
+					console.log('form submit')
+					handleSubmit();
+				}}
+				onReset={(evt)=>{
+					evt.preventDefault();
+					console.log('form reset')
+					handleReset();
+				}}>
                     <Text uppercase={true} size={31} weight={800} align={"left"}>
                         Задайте параметры
                     </Text>
@@ -72,8 +105,12 @@ export const ArticleParamsForm = () => {
                         title="ШИРИНА КОНТЕНТА"
                     />
                     <div className={styles.bottomContainer}>
-                        <Button title='Сбросить' htmlType='reset' type='clear' />
-                        <Button title='Применить' htmlType='submit' type='apply' />
+                        <Button title='Сбросить' htmlType='reset' type='clear' onClick={()=>{
+							console.log('reset')
+						}} />
+                        <Button title='Применить' htmlType='submit' type='apply' onClick={()=>{
+							console.log('apply')
+						}}/>
                     </div>
                 </form>
             </aside>
