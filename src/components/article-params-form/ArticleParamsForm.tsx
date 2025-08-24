@@ -59,9 +59,6 @@ export const ArticleParamsForm = ({
 		});
     };
 
-    // Применяем стили при изменении состояния
-    //useEffect(() => {handleSubmit}, [selectedFontSize, selectedFontFamily, selectedFontColor, selectedBackgroundColor, selectedContentWidth]);
-
     return (
         <>
             <ArrowButton
@@ -81,19 +78,19 @@ export const ArticleParamsForm = ({
                         onChange={setSelectedFontFamily}
                         title="ШРИФТ"
                     />
+					<RadioGroup
+                        name="РАЗМЕР ШРИФТА"
+                        selected={selectedFontSize}
+                        title="РАЗМЕР ШРИФТА"
+                        options={fontSizeOptions}
+                        onChange={setSelectedFontSize}
+                    />
                     <Select
                         selected={selectedFontColor}
                         options={fontColors}
                         placeholder="Выберите цвет шрифта"
                         onChange={setSelectedFontColor}
                         title="ЦВЕТ ШРИФТА"
-                    />
-                    <RadioGroup
-                        name="РАЗМЕР ШРИФТА"
-                        selected={selectedFontSize}
-                        title="РАЗМЕР ШРИФТА"
-                        options={fontSizeOptions}
-                        onChange={setSelectedFontSize}
                     />
                     <Separator></Separator>
                     <Select
