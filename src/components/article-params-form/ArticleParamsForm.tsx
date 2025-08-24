@@ -50,6 +50,13 @@ export const ArticleParamsForm = ({
         setSelectedBackgroundColor(defaultArticleState.backgroundColor);
         setSelectedContentWidth(defaultArticleState.contentWidth);
         setSelectedFontSize(defaultArticleState.fontSizeOption);
+		setCurrentArticleState({
+			fontFamilyOption: defaultArticleState.fontFamilyOption,
+			fontColor: defaultArticleState.fontColor,
+			backgroundColor: defaultArticleState.backgroundColor,
+			contentWidth: defaultArticleState.contentWidth,
+			fontSizeOption: defaultArticleState.fontSizeOption,
+		});
     };
 
     // Применяем стили при изменении состояния
