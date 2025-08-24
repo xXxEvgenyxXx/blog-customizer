@@ -53,7 +53,7 @@ export const ArticleParamsForm = ({
     };
 
     // Применяем стили при изменении состояния
-    useEffect(() => {handleSubmit}, [selectedFontSize, selectedFontFamily, selectedFontColor, selectedBackgroundColor, selectedContentWidth]);
+    //useEffect(() => {handleSubmit}, [selectedFontSize, selectedFontFamily, selectedFontColor, selectedBackgroundColor, selectedContentWidth]);
 
     return (
         <>
