@@ -1,6 +1,6 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import { useState, useEffect, SyntheticEvent } from 'react';
+import { useState, useEffect, SyntheticEvent, useRef } from 'react';
 import { Text } from 'src/ui/text';
 import { RadioGroup } from 'src/ui/radio-group';
 import {
@@ -13,16 +13,17 @@ import {
 } from 'src/constants/articleProps';
 import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
-import { defaultArticleState,ArticleStateType } from 'src/constants/articleProps';
+import { defaultArticleState, ArticleStateType } from 'src/constants/articleProps';
+import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
 
 import styles from './ArticleParamsForm.module.scss';
 
 export const ArticleParamsForm = ({
-	currentArticleState,
-	setCurrentArticleState,
-}:{
-	currentArticleState: ArticleStateType;
-	setCurrentArticleState: (param: ArticleStateType) => void;
+    currentArticleState,
+    setCurrentArticleState,
+}: {
+    currentArticleState: ArticleStateType;
+    setCurrentArticleState: (param: ArticleStateType) => void;
 }) => {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedFontSize, setSelectedFontSize] = useState<OptionType>(defaultArticleState.fontSizeOption);
@@ -31,17 +32,28 @@ export const ArticleParamsForm = ({
     const [selectedBackgroundColor, setSelectedBackgroundColor] = useState<OptionType>(defaultArticleState.backgroundColor);
     const [selectedContentWidth, setSelectedContentWidth] = useState<OptionType>(defaultArticleState.contentWidth);
 
+    // Создаем ref для сайдбара
+    const sidebarRef = useRef<HTMLDivElement>(null);
+
+    // Используем хук для закрытия при клике вне сайдбара
+    useOutsideClickClose({
+        isOpen,
+        rootRef: sidebarRef,
+        onClose: () => setIsOpen(false),
+        onChange: setIsOpen,
+    });
+
     // Функция применения стилей
-    const handleSubmit  = (event: SyntheticEvent) => {
-		event?.preventDefault();
-		setCurrentArticleState({
-			fontFamilyOption: selectedFontFamily,
-			fontColor: selectedFontColor,
-			backgroundColor: selectedBackgroundColor,
-			contentWidth: selectedContentWidth,
-			fontSizeOption: selectedFontSize,
-		});
-	};
+    const handleSubmit = (event: SyntheticEvent) => {
+        event?.preventDefault();
+        setCurrentArticleState({
+            fontFamilyOption: selectedFontFamily,
+            fontColor: selectedFontColor,
+            backgroundColor: selectedBackgroundColor,
+            contentWidth: selectedContentWidth,
+            fontSizeOption: selectedFontSize,
+        });
+    };
 
     // Функция сброса стилей
     const handleReset = () => {
@@ -50,13 +62,13 @@ export const ArticleParamsForm = ({
         setSelectedBackgroundColor(defaultArticleState.backgroundColor);
         setSelectedContentWidth(defaultArticleState.contentWidth);
         setSelectedFontSize(defaultArticleState.fontSizeOption);
-		setCurrentArticleState({
-			fontFamilyOption: defaultArticleState.fontFamilyOption,
-			fontColor: defaultArticleState.fontColor,
-			backgroundColor: defaultArticleState.backgroundColor,
-			contentWidth: defaultArticleState.contentWidth,
-			fontSizeOption: defaultArticleState.fontSizeOption,
-		});
+        setCurrentArticleState({
+            fontFamilyOption: defaultArticleState.fontFamilyOption,
+            fontColor: defaultArticleState.fontColor,
+            backgroundColor: defaultArticleState.backgroundColor,
+            contentWidth: defaultArticleState.contentWidth,
+            fontSizeOption: defaultArticleState.fontSizeOption,
+        });
     };
 
     return (
@@ -65,9 +77,11 @@ export const ArticleParamsForm = ({
                 isOpen={isOpen}
                 onClick={() => setIsOpen(!isOpen)}
             />
-            <aside className={`${styles.container} ${isOpen ? styles.container_open : ''}`}>
-                <form className={styles.form} onSubmit={handleSubmit}
-				onReset={handleReset}>
+            <aside
+                ref={sidebarRef} // Добавляем ref к сайдбару
+                className={`${styles.container} ${isOpen ? styles.container_open : ''}`}
+            >
+                <form className={styles.form} onSubmit={handleSubmit} onReset={handleReset}>
                     <Text uppercase={true} size={31} weight={800} align={"left"}>
                         Задайте параметры
                     </Text>
@@ -78,7 +92,7 @@ export const ArticleParamsForm = ({
                         onChange={setSelectedFontFamily}
                         title="ШРИФТ"
                     />
-					<RadioGroup
+                    <RadioGroup
                         name="РАЗМЕР ШРИФТА"
                         selected={selectedFontSize}
                         title="РАЗМЕР ШРИФТА"
