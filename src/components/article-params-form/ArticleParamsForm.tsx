@@ -15,6 +15,7 @@ import { Select } from 'src/ui/select';
 import { Separator } from 'src/ui/separator';
 import { defaultArticleState, ArticleStateType } from 'src/constants/articleProps';
 import { useOutsideClickClose } from 'src/ui/select/hooks/useOutsideClickClose';
+import clsx from 'clsx';
 
 import styles from './ArticleParamsForm.module.scss';
 
@@ -25,25 +26,22 @@ export const ArticleParamsForm = ({
     currentArticleState: ArticleStateType;
     setCurrentArticleState: (param: ArticleStateType) => void;
 }) => {
-    const [isOpen, setIsOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedFontSize, setSelectedFontSize] = useState<OptionType>(defaultArticleState.fontSizeOption);
     const [selectedFontFamily, setSelectedFontFamily] = useState<OptionType>(defaultArticleState.fontFamilyOption);
     const [selectedFontColor, setSelectedFontColor] = useState<OptionType>(defaultArticleState.fontColor);
     const [selectedBackgroundColor, setSelectedBackgroundColor] = useState<OptionType>(defaultArticleState.backgroundColor);
     const [selectedContentWidth, setSelectedContentWidth] = useState<OptionType>(defaultArticleState.contentWidth);
 
-    // Создаем ref для сайдбара
     const sidebarRef = useRef<HTMLDivElement>(null);
 
-    // Используем хук для закрытия при клике вне сайдбара
     useOutsideClickClose({
-        isOpen,
+        isOpen: isMenuOpen,
         rootRef: sidebarRef,
-        onClose: () => setIsOpen(false),
-        onChange: setIsOpen,
+        onClose: () => setIsMenuOpen(false),
+        onChange: setIsMenuOpen,
     });
 
-    // Функция применения стилей
     const handleSubmit = (event: SyntheticEvent) => {
         event?.preventDefault();
         setCurrentArticleState({
@@ -55,7 +53,6 @@ export const ArticleParamsForm = ({
         });
     };
 
-    // Функция сброса стилей
     const handleReset = () => {
         setSelectedFontFamily(defaultArticleState.fontFamilyOption);
         setSelectedFontColor(defaultArticleState.fontColor);
@@ -74,12 +71,15 @@ export const ArticleParamsForm = ({
     return (
         <>
             <ArrowButton
-                isOpen={isOpen}
-                onClick={() => setIsOpen(!isOpen)}
+                isOpen={isMenuOpen}
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
             />
             <aside
-                ref={sidebarRef} // Добавляем ref к сайдбару
-                className={`${styles.container} ${isOpen ? styles.container_open : ''}`}
+                ref={sidebarRef}
+                className={clsx(
+                    styles.container,
+                    isMenuOpen && styles.container_open
+                )}
             >
                 <form className={styles.form} onSubmit={handleSubmit} onReset={handleReset}>
                     <Text uppercase={true} size={31} weight={800} align={"left"}>
